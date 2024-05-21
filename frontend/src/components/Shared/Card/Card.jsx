@@ -4,14 +4,20 @@ import './card.css'
 import { Store } from '../../../Store';
 import { ADD_ITEM, REMOVE_ITEM } from "../../../reducers/actions";
 import { useEffect } from 'react';
+import { useDebounce } from '../../../Hooks.jsx';
+import Info from '../Info/Info.jsx';
 
 const Card = ({ item }) => {
 
   const navigate = useNavigate();
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
-  const [hoveredIndex, setHovered] = useState(false);
+  // const [hoveredIndex, setHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(false)
+  const hoveredIndex = useDebounce(isHovered, 300);
   const [isInMyList, setIsInMyList] = useState(false);
+  const [displayInfo, setDisplayInfo] = useState(false)
+
 
   useEffect(() => {
     if (!userInfo.myList) {
@@ -46,46 +52,56 @@ const Card = ({ item }) => {
     }
   }
 
+
   return (
-    <div className='card-container'>
-      <img
-        className='card-image'
-        src={item.imgThumb}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-      />
-      {hoveredIndex ?
-        <div
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          className='cardOverlay'>
-          <ReactPlayer
-            url={item.trailer}
-            muted={true}
-            volume={0}
-            playing={true}
-            loop={true}
-            width="300px"
-            height="200px"
-          />
+    <>
+      <div className='card-container'>
+        <img
+          className='card-image'
+          src={item.imgThumb}
+          // onMouseEnter={() => setHovered(true)}
+          onMouseEnter={() => setIsHovered(true)}
+          // onMouseLeave={() => setHovered(false)}
+          onMouseLeave={() => setIsHovered(false)}
+        />
+        {hoveredIndex ?
+          <div
+            // onMouseEnter={() => setHovered(true)}
+            onMouseEnter={() => setIsHovered(true)}
+            // onMouseLeave={() => setHovered(false)}
+            onMouseLeave={() => setIsHovered(false)}
+            className='cardOverlay'>
+            <ReactPlayer
+              url={item.trailer}
+              muted={true}
+              volume={0}
+              playing={true}
+              loop={true}
+              width="300px"
+              height="200px"
+            />
 
-          <button className="cardBtn" onClick={() => navigate(`/play/${item._id}`)}><i className="fa fa-play"></i></button>
+            <button className="cardBtn" onClick={() => navigate(`/play/${item._id}`)}><i className="fa fa-play"></i></button>
 
-          {isInMyList ?
-            <button className="cardBtn" onClick={() => removeItemFromMyListHandler(item)}><i className="fa-solid fa-minus"></i></button>
-            :
-            <button className='cardBtn' onClick={() => addToMyListHandler(item)}><i className="fa-solid fa-plus btnMylist"></i></button>
-          }
+            {isInMyList ?
+              <button className="cardBtn" onClick={() => removeItemFromMyListHandler(item)}><i className="fa-solid fa-minus"></i></button>
+              :
+              <button className='cardBtn' onClick={() => addToMyListHandler(item)}><i className="fa-solid fa-plus btnMylist"></i></button>
+            }
 
-          <div className='cardContent'>
-            <p><strong style={{ color: "green" }}>92% match</strong> {" "}{item.duration}</p>
-            <p>{item.genre}</p>
+            {/* <button className="cardBtn infoBtnCard" onClick={() => setDisplayInfo(true)}><i className="fa fa-exclamation-circle" aria-hidden="true"></i></button> */}
+
+            <div className='cardContent'>
+              <p><strong style={{ color: "green" }}>92% match</strong> {" "}{item.duration}</p>
+              <p>{item.genre}</p>
+            </div>
           </div>
-        </div>
-        :
-        null}
+          :
+          null}
 
-    </div>
+      </div>
+      {/* <Info isDisplay={displayInfo} setDisplay={setDisplayInfo} item={item}></Info> */}
+    </>
   )
 }
 

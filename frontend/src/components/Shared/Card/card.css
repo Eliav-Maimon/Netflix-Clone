@@ -37,6 +37,10 @@
     background-color: rgba(94, 94, 94, 0.404);
 }
 
+.infoBtnCard{
+    font-size: large;
+}
+
 .cardContent {
     margin-left: 20px;
     margin-top: 5px;

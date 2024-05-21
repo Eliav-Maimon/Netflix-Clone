@@ -2,31 +2,16 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Store } from '../../../Store';
 import "./searchBox.css";
+import { useDebounce } from '../../../Hooks';
 
 const SearchBox = () => {
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
   const [showSearch, setShowSearch] = useState(false);
   const [query, setQuery] = useState(undefined);
-
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
-
-  const useDebounce = (value, delay = 500) => {
-    const [debouncedValue, setDebouncedValue] = useState();
-    useEffect(() => {
-      const timeout = setTimeout(() => {
-        setDebouncedValue(value);
-      }, delay);
-
-      return () => clearTimeout(timeout)
-    }, [value, delay]);
-
-    return debouncedValue;
-  }
-
   const debouncedSearch = useDebounce(query);
-
 
   useEffect(() => {
     if (!query && query !== "") {

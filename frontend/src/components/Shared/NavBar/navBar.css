@@ -50,11 +50,15 @@ li a:hover {
     .icons-navBar {
         width: 30%;
     }
-
+ 
     li a {
         font-size: small;
         padding: 10px 10px;
     }
+
+    /* .pagesNavigateNavBar{
+        display: none;
+    } */
 }
 
 #mainDivNavBar {

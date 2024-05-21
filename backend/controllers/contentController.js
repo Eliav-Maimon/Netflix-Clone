@@ -2,20 +2,15 @@ import Content from '../models/Content.js'
 import User from '../models/User.js';
 import FeaturedContents from '../models/FeaturedContents.js';
 
-export const getContents = async (req, res) => {
-    const content = await Content.find({});
-    res.send(content);
-}
-
-export const getAll = async (req, res) => {
-    const content = await FeaturedContents.find({}).populate('contentList');
-    res.send(content);
+export const getContent = async (req, res) => {
+    res.send(res.paginatedResults)
 }
 
 export const getMovies = async (req, res) => {
     const movies = await FeaturedContents.find({ isSeries: false }).populate('contentList');
     res.send(movies);
 }
+
 export const getSeries = async (req, res) => {
     const series = await FeaturedContents.find({ isSeries: true }).populate('contentList');
     res.send(series);

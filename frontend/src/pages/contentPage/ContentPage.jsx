@@ -14,16 +14,28 @@ const ContentPage = () => {
     const [myList, setMyList] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
-    const [content, setContent] = useState(null);
+    const [content, setContent] = useState([]);
     const [billboardData, setBillboardData] = useState();
-
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true)
+    let cancel
 
     const getContent = async () => {
-        ctxDispatch({ type: GET_REQUEST });
+        if (content.length <= 0) {
+            ctxDispatch({ type: GET_REQUEST });
+        }
+
+        if(!hasMore)
+            return
+
         try {
-            const { data } = await axios.get(apiEndpoint, {
+            const { data } = await axios.get(`${apiEndpoint}?page=${page}&limit=3`, {
                 headers: { Authorization: `Bearer ${userInfo.token}` },
+                cancelToken: new axios.CancelToken(c => cancel = c)
             });
+
+            setContent(prevContent => [...prevContent, ...data.result]);
+            setHasMore(data.next ? true : false)
 
             if (includeMyList) {
                 const myListFromDB = await axios.get(`/api/v1/content/myList/${userInfo['_id']}`, {
@@ -33,9 +45,9 @@ const ContentPage = () => {
                 ctxDispatch({ type: MY_LIST, payload: myListFromDB.data })
             }
 
-            setContent(data)
-            ctxDispatch({ type: GET_SUCCESS, payload: data });
+            ctxDispatch({ type: GET_SUCCESS, payload: data.result });
         } catch (err) {
+            if (axios.isCancel(err)) return
             ctxDispatch({ type: GET_FAIL, payload: err });
             console.error(err);
             navigate("/signin");
@@ -45,10 +57,10 @@ const ContentPage = () => {
     useEffect(() => {
         if (!userInfo) {
             navigate("/signin");
-        } else {
+        } else if (hasMore) {
             if (location.pathname === "/") {
                 includeMyList = true;
-                apiEndpoint = "/api/v1/content";
+                apiEndpoint = "/api/v1/content/";
             }
             else if (location.pathname === '/movies') {
                 includeMyList = false;
@@ -60,21 +72,25 @@ const ContentPage = () => {
             }
 
             getContent();
+
+            return () => {
+                if (cancel)
+                    cancel()
+            }
         }
-    }, []);
+    }, [page]);
 
     useEffect(() => {
         if (!billboardData) {
             putRandomContentInBillboard();
         }
-    }, [content])
+    }, [content.length])
 
     useEffect(() => {
         if (myList && userInfo && userInfo.myList) {
             setMyList([userInfo.myList])
         }
     }, [userInfo?.myList])
-
 
     const putRandomContentInBillboard = () => {
         if (!content || content.length == 0) {
@@ -86,6 +102,19 @@ const ContentPage = () => {
             setBillboardData(content[newRandomNumber].contentList[randomInList]);
         }
     };
+
+    const handleScroll = () => {
+        if (window.innerHeight + document.documentElement.scrollTop < document.documentElement.offsetHeight || loading) return
+        console.log('in bottom page')
+        setPage(prevPage => prevPage + 1);
+    };
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+    // }, [loading]); // Add/remove event listener based on loading state
+
 
     return (
         loading ? <Loading /> : (
