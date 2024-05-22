@@ -26,7 +26,7 @@ const Billboard = ({ item }) => {
                         <div className='links'>
                             <a href={`/play/${item._id}`}><i className="fa fa-play" aria-hidden="true"></i><span>Play</span></a>
                             <button className="billboardBtn" onClick={() => setDisplayInfo(prev => !prev)}><i className="fa fa-exclamation-circle" aria-hidden="true"></i><span>Info</span></button>
-                            <Info isDisplay={displayInfo} setDisplay={setDisplayInfo} item={item}></Info>
+                            {/* <Info isDisplay={displayInfo} setDisplay={setDisplayInfo} item={item}></Info> */}
                         </div>
                     </div>
                 </div>
