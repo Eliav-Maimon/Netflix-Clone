@@ -6,6 +6,8 @@ import seedRouter from './routers/seedRouter.js';
 import userRouter from './routers/userRouter.js';
 import contentRouter from './routers/contentRouter.js';
 import resetRouter from './routers/resetPwdRouter.js';
+import serverless from 'serverless-http';
+
 
 const app = express();
 
