@@ -35,3 +35,6 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING)
     }).catch(err => {
         console.log(err.message);
     });
+
+
+export const handler = serverless(app);

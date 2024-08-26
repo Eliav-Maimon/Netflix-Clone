@@ -10,7 +10,7 @@ import { StoreProvider } from './Store.jsx'
 const inDevOrProd = import.meta.env.DEV;
 axios.defaults.baseURL = inDevOrProd
   ? "http://localhost:8080"
-  : "https://netflix-clone-sage-sigma.vercel.app/";
+  : "https://netflix-clone-three-sigma-63.vercel.app/";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
