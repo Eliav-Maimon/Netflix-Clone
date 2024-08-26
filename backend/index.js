@@ -39,4 +39,4 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING)
     });
 
 
-export const handler = serverless(app);
+export default serverless(app);
