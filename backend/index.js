@@ -6,7 +6,6 @@ import seedRouter from './routers/seedRouter.js';
 import userRouter from './routers/userRouter.js';
 import contentRouter from './routers/contentRouter.js';
 import resetRouter from './routers/resetPwdRouter.js';
-import serverless from 'serverless-http';
 
 
 const app = express();
@@ -37,6 +36,3 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING)
     }).catch(err => {
         console.log(err.message);
     });
-
-
-export default serverless(app);
